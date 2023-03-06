@@ -40,6 +40,9 @@ func (c *RClient) Get(key string) (r *Item, targets []string, err error) {
 				targets = []string{host.Addr}
 				err = nil
 				//return r, nil
+
+				// 修正unicode
+				r.Body = c.repairUnicodeBody(r)
 				return
 			}
 		} else if err.Error() != "wait for retry" {
@@ -55,6 +58,22 @@ func (c *RClient) Get(key string) (r *Item, targets []string, err error) {
 	}
 	// here is a failure exit
 	return
+}
+
+func (c *RClient) repairUnicodeBody(r *Item) []byte {
+	var repairBody []byte
+	unicodePrev := string([]byte{uint8(128), uint8(2), uint8(88)})
+	var bodyPrev string
+	bodyLen := len(r.Body)
+	if bodyLen >= 3 {
+		bodyPrev = string(r.Body[:3])
+	}
+	if unicodePrev == bodyPrev {
+		repairBody = r.Body[7 : bodyLen-3]
+	} else {
+		repairBody = r.Body
+	}
+	return repairBody
 }
 
 func (c *RClient) getMulti(keys []string) (rs map[string]*Item, targets []string, err error) {
