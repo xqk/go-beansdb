@@ -80,4 +80,23 @@ func TestClient(t *testing.T) {
 			fmt.Println(targets)
 		}
 	})
+
+	t.Run("ping5", func(t *testing.T) {
+		//sch := NewModScheduler([]string{"127.0.0.1:7901"}, "md5")
+		sch := NewAutoScheduler([]string{"127.0.0.1:7901"}, 16)
+		client := NewRClient(sch, 1, 1, 1)
+		item, targets, err := client.Get("TT_33568705")
+		if err != nil {
+			t.Error(err)
+			return
+		}
+
+		if item != nil {
+			fmt.Println(string(item.Body))
+		}
+
+		if len(targets) > 0 {
+			fmt.Println(targets)
+		}
+	})
 }
