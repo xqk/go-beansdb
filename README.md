@@ -15,8 +15,8 @@ import (
 ```
 
 ```go
-sch := NewAutoScheduler([]string{"127.0.0.1:7901"}, 16)
-client := NewRClient(sch, 1, 1, 1)
+sch := memcache.NewAutoScheduler([]string{"127.0.0.1:7901"}, 16)
+client := Nmemcache.ewRClient(sch, 1, 1, 1)
 item, targets, err := client.Get("foo")
 fmt.Println(string(item.Body))
 ```
